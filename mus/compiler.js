@@ -11,6 +11,30 @@ var endTime = function (time, expr) {
 	}
 };
 
+var letterPitch = function (letter) {
+	switch (letter.toUpperCase()) {
+	case 'A':
+		return 9;
+	case 'B':
+		return 11;
+	case 'C':
+		return 0;
+	case 'D':
+		return 2;
+	case 'E':
+		return 4;
+	case 'F':
+		return 5;
+	case 'G':
+		return 7;
+	}
+};
+
+var convertToPitchNumber = function (pitch) {
+	var letter = pitch[0], octave = pitch[1];
+	return 12 + 12 * octave + letterPitch(letter);
+};
+
 var compileT = function (time, expr) {
 	var note = {};
 	if (expr.tag === 'note' || expr.tag === 'rest') {
@@ -18,7 +42,7 @@ var compileT = function (time, expr) {
 		note.start = time;
 		note.dur = expr.dur;
 		if (expr.tag === 'note') {
-			note.pitch = expr.pitch;
+			note.pitch = convertToPitchNumber(expr.pitch);
 		}
 		return [note];
 	} else {
