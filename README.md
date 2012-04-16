@@ -9,7 +9,7 @@ I've choosed [Mocha](http://visionmedia.github.com/mocha/) for my test framework
 Install both modules:
 
 	npm install –g mocha 
-  npm install -g expect.js
+	npm install -g expect.js
 
 Run the tests:
 
