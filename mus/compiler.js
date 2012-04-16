@@ -5,8 +5,10 @@ var endTime = function (time, expr) {
 	} else {
 		if (expr.tag === 'seq') {
 			return time + endTime(time, expr.left) + endTime(time, expr.right);
-		} else {
+		} else if (expr.tag === 'par') {
 			return time + Math.max(endTime(time, expr.left), endTime(time, expr.right));
+		} else {
+			return time + expr.count * endTime(0, expr.section);
 		}
 	}
 };
@@ -36,7 +38,7 @@ var convertToPitchNumber = function (pitch) {
 };
 
 var compileT = function (time, expr) {
-	var note = {};
+	var note = {}, count = 0, arr = [];
 	if (expr.tag === 'note' || expr.tag === 'rest') {
 		note.tag = expr.tag;
 		note.start = time;
@@ -48,8 +50,13 @@ var compileT = function (time, expr) {
 	} else {
 		if (expr.tag === 'seq') {
 			return compileT(time, expr.left).concat(compileT(endTime(time, expr.left), expr.right));
-		} else {
+		} else if (expr.tag === 'par') {
 			return compileT(time, expr.left).concat(compileT(time, expr.right));
+		} else {
+			for (count = 0; count < expr.count; count++) {
+				arr = arr.concat(compileT(time + count * endTime(0, expr.section), expr.section));
+			}
+			return arr;
 		}
 	}
 };
@@ -65,8 +72,10 @@ var melody_mus =
 			 left: { tag: 'note', pitch: 'a4', dur: 250 },
 			 right: { tag: 'rest', pitch: 'b4', dur: 250 } },
 		right:
-		 { tag: 'par',
-			 left: { tag: 'note', pitch: 'c4', dur: 500 },
-			 right: { tag: 'note', pitch: 'd4', dur: 500 } } };
+		 { tag: 'seq',
+			 left: { 	tag: 'repeat',
+  							section: { tag: 'note', pitch: 'g4', dur: 250 },
+  							count: 3 },
+			 right: { tag: 'note', pitch: 'c4', dur: 500 } } };
 
 console.log(compile(melody_mus));
