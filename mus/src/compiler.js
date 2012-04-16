@@ -70,3 +70,6 @@ var compileT = function (time, expr) {
 var compile = function (musexpr) {
 	return compileT(0, musexpr);
 };
+
+module.exports.compile = compile;
+module.exports.convertToPitchNumber = convertToPitchNumber;
