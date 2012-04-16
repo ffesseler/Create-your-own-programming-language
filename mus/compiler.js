@@ -1,15 +1,16 @@
-// maybe some helper functions
 var endTime = function (time, expr) {
-	if (expr.tag === 'note' || expr.tag === 'rest') {
+	switch (expr.tag) {
+	case 'note':
+	case 'rest':
 		return time + expr.dur;
-	} else {
-		if (expr.tag === 'seq') {
-			return time + endTime(time, expr.left) + endTime(time, expr.right);
-		} else if (expr.tag === 'par') {
-			return time + Math.max(endTime(time, expr.left), endTime(time, expr.right));
-		} else {
-			return time + expr.count * endTime(0, expr.section);
-		}
+	case 'seq':
+		return time + endTime(time, expr.left) + endTime(time, expr.right);
+	case 'par':
+		return time + Math.max(endTime(time, expr.left), endTime(time, expr.right));
+	case 'repeat':
+		return time + expr.count * endTime(0, expr.section);
+	default:
+		return 0;
 	}
 };
 
@@ -39,25 +40,30 @@ var convertToPitchNumber = function (pitch) {
 
 var compileT = function (time, expr) {
 	var note = {}, count = 0, arr = [];
-	if (expr.tag === 'note' || expr.tag === 'rest') {
+
+	switch (expr.tag) {
+	case 'note':
 		note.tag = expr.tag;
 		note.start = time;
 		note.dur = expr.dur;
-		if (expr.tag === 'note') {
-			note.pitch = convertToPitchNumber(expr.pitch);
-		}
+		note.pitch = convertToPitchNumber(expr.pitch);
 		return [note];
-	} else {
-		if (expr.tag === 'seq') {
-			return compileT(time, expr.left).concat(compileT(endTime(time, expr.left), expr.right));
-		} else if (expr.tag === 'par') {
-			return compileT(time, expr.left).concat(compileT(time, expr.right));
-		} else {
-			for (count = 0; count < expr.count; count++) {
-				arr = arr.concat(compileT(time + count * endTime(0, expr.section), expr.section));
-			}
-			return arr;
+	case 'rest':
+		note.tag = expr.tag;
+		note.start = time;
+		note.dur = expr.dur;
+		return [note];
+	case 'seq':
+		return compileT(time, expr.left).concat(compileT(endTime(time, expr.left), expr.right));
+	case 'par':
+		return compileT(time, expr.left).concat(compileT(time, expr.right));
+	case 'repeat':
+		for (count = 0; count < expr.count; count++) {
+			arr = arr.concat(compileT(time + count * endTime(0, expr.section), expr.section));
 		}
+		return arr;
+	default:
+		return [];
 	}
 };
 
@@ -73,7 +79,7 @@ var melody_mus =
 			 right: { tag: 'rest', pitch: 'b4', dur: 250 } },
 		right:
 		 { tag: 'seq',
-			 left: { 	tag: 'repeat',
+			 left: {	tag: 'repeat',
   							section: { tag: 'note', pitch: 'g4', dur: 250 },
   							count: 3 },
 			 right: { tag: 'note', pitch: 'c4', dur: 500 } } };
