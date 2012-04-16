@@ -58,7 +58,7 @@ var compileT = function (time, expr) {
 	case 'par':
 		return compileT(time, expr.left).concat(compileT(time, expr.right));
 	case 'repeat':
-		for (count = 0; count < expr.count; count++) {
+		for (count = 0; count < expr.count; count += 1) {
 			arr = arr.concat(compileT(time + count * endTime(0, expr.section), expr.section));
 		}
 		return arr;
@@ -70,18 +70,3 @@ var compileT = function (time, expr) {
 var compile = function (musexpr) {
 	return compileT(0, musexpr);
 };
-
-var melody_mus = 
-	{ tag: 'seq',
-		left: 
-		 { tag: 'seq',
-			 left: { tag: 'note', pitch: 'a4', dur: 250 },
-			 right: { tag: 'rest', pitch: 'b4', dur: 250 } },
-		right:
-		 { tag: 'seq',
-			 left: {	tag: 'repeat',
-  							section: { tag: 'note', pitch: 'g4', dur: 250 },
-  							count: 3 },
-			 right: { tag: 'note', pitch: 'c4', dur: 500 } } };
-
-console.log(compile(melody_mus));
