@@ -7,7 +7,12 @@ var endTime = function (time, expr) {
     }
     else
     {
-        return time + endTime(time, expr.left) + endTime(time, expr.right);
+        if (expr.tag == 'seq') {
+            return time + endTime(time, expr.left) + endTime(time, expr.right);
+        }
+        else {
+            return time + Math.max(endTime(time, expr.left), endTime(time,expr.right));
+        }
     }
 };
 
@@ -23,11 +28,17 @@ var compileT = function(time, expr) {
     }
     else
     {
-        return compileT(time, expr.left).concat(compileT(endTime(time, expr.left), expr.right));
+        if (expr.tag == 'seq') {
+            return compileT(time, expr.left).concat(compileT(endTime(time, expr.left), expr.right));
+        }
+        else {
+            return compileT(time, expr.left).concat(compileT(time, expr.right));
+        }
     }
 };
 
 var compile = function (musexpr) {
+    console.log(compileT(0, musexpr));
     return compileT(0, musexpr);
 };
 
