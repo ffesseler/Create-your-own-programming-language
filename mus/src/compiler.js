@@ -14,28 +14,11 @@ var endTime = function (time, expr) {
 	}
 };
 
-var letterPitch = function (letter) {
-	switch (letter.toUpperCase()) {
-	case 'A':
-		return 9;
-	case 'B':
-		return 11;
-	case 'C':
-		return 0;
-	case 'D':
-		return 2;
-	case 'E':
-		return 4;
-	case 'F':
-		return 5;
-	case 'G':
-		return 7;
-	}
-};
+var letterPitch = { A: 9, B: 11, C: 0, D: 2, E: 4, F: 5, G: 7 };
 
 var convertToPitchNumber = function (pitch) {
 	var letter = pitch[0], octave = pitch[1];
-	return 12 + 12 * octave + letterPitch(letter);
+	return 12 + 12 * octave + letterPitch[letter.toUpperCase()];
 };
 
 var compileT = function (time, expr) {
