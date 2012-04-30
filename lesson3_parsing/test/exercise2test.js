@@ -22,6 +22,9 @@ parser = wrapExceptions(PEG.buildParser(grammar).parse);
 
 describe('Parser Actions', function(){
 	describe('#countrycode', function(){
+		it('should not parse ""', function() {
+	    	expect(parser("")).to.be(undefined);
+	    }),
 	    it('should parse canada', function() {
 	    	expect(parser("ca")).to.eql('ca');
 	    }),
