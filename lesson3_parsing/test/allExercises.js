@@ -132,3 +132,37 @@ describe('Parsing arithmetic in PEGs', function(){
 	    })
 	})
 })
+
+describe('Homework', function(){
+	var parser;
+	before(function () {
+		grammar = fs.readFileSync("src/homework.pegjs").toString();
+		parser = wrapExceptions(PEG.buildParser(grammar).parse);  
+	});
+	describe('#sheem aditions : whitespaces', function(){
+		it('should not parse empty string', function() {
+	    	expect(parser("")).to.be(undefined);
+	    }),
+	    it('should parse " atom"', function() {
+	    	expect(parser(' atom')).to.eql('atom');
+	    }),
+	    it('should parse "+ "', function() {
+	    	expect(parser('+ ')).to.eql('+');
+	    }),
+	    it('should parse " (  + x 3)"', function() {
+	    	expect(parser(' (  + x 3)')).to.eql(['+', 'x', '3']);
+	    }),
+	    it('should parse "	(+ 1 (f x 3 y))"', function() {
+	    	expect(parser("		(   + 1 (f x   3 y)	)")).to.eql(["+", "1", ["f", "x", "3", "y"]]);
+	    }),
+	    it('should parse "(+ 1 (f x 3 y))"', function() {
+	    	expect(parser("(+ 1 (f x 3 y));;comment")).to.eql(["+", "1", ["f", "x", "3", "y"]]);
+	    }),
+	    it('should parse simple comment', function() {
+	    	expect(parser(";;comment")).to.eql("");
+	    })
+	    it('should parse "\'(1 2 3)"', function() {
+	    	expect(parser("'(1 2 3)")).to.eql(["quote", ["1", "2", "3"]]);
+	    })
+	})	
+})
