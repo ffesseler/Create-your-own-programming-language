@@ -15,4 +15,4 @@ Run the tests:
 
 	mocha
 
-You should type mocha from the mus directory.
+You should type mocha from the base directory of each lessons.
