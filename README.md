@@ -4,7 +4,7 @@ More info: http://nathansuniversity.com/
 
 Running the tests
 -----------------
-I've choosed [Mocha](http://visionmedia.github.com/mocha/) for my test framework and [expect.js](http://https://github.com/LearnBoost/expect.js) for assertions.
+I've choosed [Mocha](https://mochajs.org/) for my test framework and [expect.js](http://https://github.com/LearnBoost/expect.js) for assertions.
 
 Install both modules:
 
